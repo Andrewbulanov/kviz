@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Тема раунда — Шоу Ивана Баринова</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="neon">
+
+  <div class="container" style="display:flex; align-items:center; justify-content:center; height:100%;">
+
+    <div class="topic-card" style="padding:60px 50px;">
+      <h1 class="topic-title" style="font-size:64px; line-height:1.2;">{{ topic }}</h1>
+      <p class="topic-sub" style="font-size:22px; margin-top:10px;">Раунд {{ current }} из {{ total }}</p>
+
+      <div class="controls" style="margin-top:48px;">
+        <a href="{{ url_for('game') }}" class="btn glow-blue big" style="font-size:22px;">▶️ Далее</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

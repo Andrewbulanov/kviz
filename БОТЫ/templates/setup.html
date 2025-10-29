@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Настройка — Шоу Ивана Баринова</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="neon">
+  <div class="container">
+
+    <h1 class="title">⚙️ Настройка — Шоу Ивана Баринова</h1>
+
+    <form method="post" id="setupForm">
+
+      <!-- Карточки команд -->
+      <div class="teams grid">
+        {% for t in teams %}
+        <div class="team-card big">
+          <label>Название команды</label>
+          <input type="text" name="name_{{ loop.index0 }}" value="{{ t.name }}">
+          <label style="margin-top:12px;">Стартовые очки</label>
+          <input type="number" name="score_{{ loop.index0 }}" value="{{ t.score }}" min="0">
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Кнопки добавить/удалить команды -->
+      <div class="controls" style="margin-top: 22px;">
+        <button name="add_team" class="btn glow-green">➕ Добавить команду</button>
+        <button name="remove_team" class="btn glow-pink">➖ Удалить команду</button>
+      </div>
+
+      <!-- Темы игры -->
+      <div class="topics-block" style="margin-top: 32px;">
+        <label style="font-size:20px; font-weight:600;">Темы раундов (по одной в строку):</label>
+        <textarea name="topics" placeholder="Например:
+История
+Музыка
+Наука
+Фильмы" rows="5">{{ topics }}</textarea>
+      </div>
+
+      <!-- Старт -->
+      <div class="controls" style="margin-top: 32px;">
+        <button name="start_game" class="btn glow-blue big">▶️ Начать игру</button>
+      </div>
+
+    </form>
+  </div>
+</body>
+</html>

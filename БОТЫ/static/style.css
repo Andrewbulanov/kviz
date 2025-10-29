@@ -1,0 +1,264 @@
+:root{
+  --bg1: #0a0020;
+  --bg2: #050013;
+  --neon-cyan: #00f5d4;
+  --neon-blue: #00e6ff;
+  --neon-pink: #f15bb5;
+  --neon-purple: #5e60ce;
+
+  --text: #e6fff7;
+  --card-bg: rgba(0,0,30,0.65);
+  --card-border: rgba(0,255,255,0.35);
+
+  --font-ui: 'Poppins', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  height:100vh;
+  font-family:var(--font-ui);
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(94,96,206,0.13), transparent 40%),
+    radial-gradient(900px 500px at 80% 90%, rgba(241,91,181,0.12), transparent 40%),
+    linear-gradient(120deg, var(--bg1), var(--bg2));
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto;
+}
+
+body.neon{
+  background-size:200% 200%,200% 200%,auto;
+  animation: bgShift 18s ease-in-out infinite;
+}
+@keyframes bgShift{
+  0% {background-position: 0% 50%, 100% 50%, 0 0;}
+  50%{background-position:100% 50%, 0% 50%, 0 0;}
+  100%{background-position: 0% 50%, 100% 50%, 0 0;}
+}
+
+/* container */
+.container{
+  width:95%;
+  max-width:1300px;
+  padding:32px 32px 48px;
+}
+
+/* title */
+.title{
+  font-family:var(--font-display);
+  font-size:52px;
+  text-align:center;
+  margin: 14px 0 30px;
+  color:var(--neon-cyan);
+  text-shadow:0 0 32px rgba(0,245,212,0.22);
+}
+
+/* adaptive centered grid --- 4/3/2/1 layout */
+.teams.grid{
+  display:grid;
+  gap:26px;
+  grid-template-columns: repeat(4, minmax(280px, 1fr));
+  justify-content:center;
+  justify-items:center;
+}
+@media (max-width: 1200px){
+  .teams.grid{ grid-template-columns: repeat(3, minmax(260px,1fr)); }
+}
+@media (max-width: 880px){
+  .teams.grid{ grid-template-columns: repeat(2, minmax(250px,1fr));}
+}
+@media (max-width: 580px){
+  .teams.grid{ grid-template-columns: 1fr;}
+}
+
+/* каждая строка команд выравнивается отдельно */
+.teams-row{
+  display:flex;
+  justify-content:center;
+  gap:26px;
+  margin-bottom:26px;
+  flex-wrap:nowrap;
+}
+
+/* Team Card */
+.team-card{
+  background:var(--card-bg);
+  border:2px solid var(--card-border);
+  border-radius:26px;
+  padding:32px;
+  width:100%;
+  max-width:300px;
+  box-shadow:0 12px 36px rgba(0,0,0,0.5);
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.team-card h2{
+  font-family:var(--font-display);
+  font-size:28px;
+  margin: 6px 0 14px;
+  color:var(--neon-blue);
+}
+
+/* SCORE */
+.team-card .score{
+  font-size:24px;
+  margin-bottom:16px;
+}
+
+/* INPUTS (ставка / стартовые очки) */
+.team-card input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:14px;
+  border:2px solid rgba(0,230,255,0.35);
+  background:rgba(0,10,40,0.65);
+  color:var(--text);
+  font-size:20px;
+  text-align:center;
+  outline:none;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+.team-card input:hover,
+.team-card input:focus{
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 26px rgba(0,245,212,0.25);
+}
+.team-card.dead{
+  border-color:rgba(255,50,50,0.95);
+  box-shadow:0 10px 40px rgba(255,80,80,0.18);
+}
+.team-card.dead h2{
+  color:#ff6b6b;
+  text-shadow:0 0 16px rgba(255,90,90,0.25);
+}
+
+/* Убираем number-стрелки */
+.team-card input[type="number"]::-webkit-outer-spin-button,
+.team-card input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance:none;
+  margin:0;
+}
+.team-card input[type="number"]{
+  -moz-appearance: textfield;
+  appearance: textfield; /* добавляем neutral fallback */
+}
+
+/* Answer Block */
+.answer{
+  text-align:center;
+  margin:38px 0 20px;
+}
+.answer-input{
+  width:260px;
+  padding:18px;
+  border-radius:14px;
+  background:rgba(0,0,40,0.55);
+  border:2px solid var(--neon-cyan);
+  color:var(--text);
+  font-size:24px;
+  text-align:center;
+  box-shadow:0 0 28px rgba(0,245,212,0.22);
+}
+
+/* Buttons */
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:18px;
+  margin-top:18px;
+}
+.btn{
+  border:none;
+  border-radius:16px;
+  padding:14px 32px;
+  font-weight:700;
+  font-size:18px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:.18s ease;
+}
+.btn.big{ padding:16px 38px; font-size:20px; }
+.btn:hover{ transform:translateY(-2px); filter:brightness(1.05);}
+.glow-green{ background:var(--neon-cyan); color:#002; }
+.glow-blue { background:var(--neon-purple); color:#fff; }
+.glow-pink { background:var(--neon-pink); color:#fff; }
+
+/* Setup — textarea styled as neon card */
+.topics-block textarea{
+  width:100%;
+  padding:22px;
+  border-radius:20px;
+  border:2px solid rgba(0,230,255,0.35);
+  background:rgba(0,0,40,0.55);
+  color:var(--text);
+  font-size:18px;
+  outline:none;
+  transition:0.25s;
+  resize:vertical;
+  min-height:180px;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.35);
+}
+.topics-block textarea:hover,
+.topics-block textarea:focus{
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 38px rgba(0,230,255,0.25);
+  background: rgba(0,12,50,0.6);
+}
+
+/* Winner Overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.75);
+  z-index:60;
+}
+.overlay.hidden{ display:none; }
+
+.winner-box{
+  width:90%;
+  max-width:950px;
+  background:linear-gradient(135deg,rgba(10,10,30,0.97),rgba(5,0,20,0.95));
+  border:3px solid rgba(255,215,120,0.25);
+  padding:54px 40px;
+  border-radius:24px;
+  text-align:center;
+  animation:pop .75s ease;
+  position:relative;
+}
+@keyframes pop{
+  0%{transform:scale(.8);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+.winner-box h2{
+  font-family:var(--font-display);
+  font-size:48px;
+  margin-bottom:16px;
+  color:var(--neon-pink);
+  text-shadow:0 0 24px rgba(255,100,180,0.25);
+}
+.winner-box p{
+  font-size:28px;
+  margin-bottom:26px;
+}
+
+/* Confetti */
+#confetti{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:visible;
+  z-index:1;
+}
+.confetti{
+  position:absolute;
+  border-radius:3px;
+}

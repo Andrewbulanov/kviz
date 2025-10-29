@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Игра — Шоу Ивана Баринова</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="neon">
+  <div class="container">
+
+    <h1 class="title">✨ Шоу Ивана Баринова ✨</h1>
+
+    <!-- Основная форма (ставки + ответ) -->
+    <form method="post" id="gameForm">
+
+      <!-- Контейнер, куда JS сам построит ряды -->
+      <div id="teamsContainer"></div>
+
+      <div class="answer">
+        <h3>🎯 Правильный ответ:</h3>
+        <input type="number" name="correct_answer" class="answer-input" value="{{ correct_answer or '' }}" id="correctAnswer">
+      </div>
+
+      <div class="controls">
+        <button type="submit" class="btn glow-green big">🔄 Обновить очки</button>
+      </div>
+    </form>
+
+    <div class="controls">
+      <form method="post" action="{{ url_for('next_round') }}">
+        <button type="submit" class="btn glow-blue big">➡ Следующий раунд</button>
+      </form>
+      <a href="{{ url_for('reset') }}" class="btn glow-pink big">🔁 Новая игра</a>
+    </div>
+
+  </div>
+
+  <!-- Победный экран -->
+  <div id="winnerOverlay" class="overlay hidden">
+    <div class="winner-box">
+      <h2 id="winnerText"></h2>
+      <p id="winnerScore"></p>
+      <div id="confetti"></div>
+      <div style="margin-top:30px;">
+        <a class="btn glow-blue big" href="{{ url_for('reset') }}">🎉 Играть снова</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    // ---------- 1) Формируем правильные ряды карточек ----------
+    const TEAMS_DATA = {{ teams|tojson }};
+    const container = document.getElementById('teamsContainer');
+
+    function buildTeamRows(teams){
+      const n = teams.length;
+      let layout = [];
+
+      if (n <= 4){
+        layout = [n];             // 2,3,4 = 1 ряд
+      } else if (n === 5){
+        layout = [3,2];           // спец: 3 + 2
+      } else if (n === 6){
+        layout = [3,3];           // 3 + 3
+      } else if (n === 7){
+        layout = [4,3];           // 4 + 3
+      } else if (n === 8){
+        layout = [4,4];           // 4 + 4
+      } else if (n === 9){
+        layout = [3,3,3];         // 3 + 3 + 3
+      } else if (n === 10){
+        layout = [4,3,3];         // 4 + 3 + 3
+      } else if (n === 11){
+        layout = [4,4,3];
+      } else if (n === 12){
+        layout = [4,4,4];
+      }
+
+      container.innerHTML = "";
+      let index = 0;
+      layout.forEach(rowCount => {
+        const row = document.createElement('div');
+        row.className = 'teams-row';
+        for (let i = 0; i < rowCount; i++){
+          const t = teams[index++];
+          const card = document.createElement('div');
+          card.className = `team-card big ${t.score === 0 ? 'dead':''}`;
+          card.innerHTML = `
+            <h2>${t.name}</h2>
+            <p class="score">Очки: <span>${t.score}</span></p>
+            <label>Ставка:</label>
+            <input type="number"
+              name="bet_${index-1}"
+              class="bet-input"
+              value="${t.bet}"
+              min="0"
+              max="${t.score}">
+          `;
+          row.appendChild(card);
+        }
+        container.appendChild(row);
+      });
+    }
+
+    buildTeamRows(TEAMS_DATA);
+
+    // ---------- 2) Winner logic ----------
+    {% if winner %}
+      window.showWinnerOverlay("{{ winner }}", (function(){
+        {% for t in teams %}
+        {% if t.name == winner %}
+        return {{ t.score }};
+        {% endif %}
+        {% endfor %}
+        return 0;
+      })());
+    {% else %}
+    (function(){
+      var alive = 0, name='', score=0;
+      {% for t in teams %}
+      {% if t.score > 0 %}
+      alive++; name="{{ t.name }}"; score={{ t.score }};
+      {% endif %}
+      {% endfor %}
+      if(alive === 1){ window.showWinnerOverlay(name, score); }
+    })();
+    {% endif %}
+
+    // ---------- 3) Live bet-limiting ----------
+    document.addEventListener("input", e => {
+      if (e.target.classList.contains("bet-input")){
+        const max = parseInt(e.target.getAttribute("max"));
+        let val = parseInt(e.target.value) || 0;
+        if (val > max) e.target.value = max;
+        if (val < 0)   e.target.value = 0;
+      }
+    });
+  </script>
+</body>
+</html>
